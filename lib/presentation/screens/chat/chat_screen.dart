@@ -7,7 +7,7 @@ import 'package:orgg_yes_app/presentation/widgets/shared/message_field_box.dart'
 import 'package:provider/provider.dart';
 
 class ChatScreen extends StatelessWidget {
-  const ChatScreen({super.key});
+  const ChatScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -16,9 +16,10 @@ class ChatScreen extends StatelessWidget {
         leading: const Padding(
           padding: EdgeInsets.all(4.0),
           child: CircleAvatar(
-            backgroundImage: NetworkImage('https://avatars.githubusercontent.com/u/123588637?v=4'),
+            backgroundImage: NetworkImage(
+                'https://avatars.githubusercontent.com/u/123588637?v=4'),
           ),
-          ),
+        ),
         title: const Text('Usuario'),
         centerTitle: false,
       ),
@@ -28,10 +29,8 @@ class ChatScreen extends StatelessWidget {
 }
 
 class _ChatView extends StatelessWidget {
-
   @override
   Widget build(BuildContext context) {
-
     final chatProvider = context.watch<ChatProvider>();
 
     return SafeArea(
@@ -44,18 +43,18 @@ class _ChatView extends StatelessWidget {
                 controller: chatProvider.chatScrollController,
                 itemCount: chatProvider.messages.length,
                 itemBuilder: (context, index) {
-
                   final message = chatProvider.messages[index];
 
-                  return (message.fromWho == FromWho.me) 
-                  ? MyMessage(message: message) 
-                  : const HerMessage();
-              },)
+                  // Aquí decides qué widget de mensaje mostrar basado en quien lo envió
+                  return message.fromWho == FromWho.me
+                      ? MyMessage(message: message)
+                      : HerMessage(message: message); // Pasa el mensaje a HerMessage
+                },
+              ),
             ),
-              MessageFieldBox(
-                //onValue: (value) => chatProvider.sendMessage(value),
-                onValue: chatProvider.sendMessage,
-              )
+            MessageFieldBox(
+              onValue: chatProvider.sendMessage,
+            )
           ],
         ),
       ),

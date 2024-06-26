@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:orgg_yes_app/domain/entities/message.dart';
 
 class HerMessage extends StatelessWidget {
-  const HerMessage({super.key});
+  final Message message;
 
+  const HerMessage({Key? key, required this.message}) : super(key: key);
+  
   @override
   Widget build(BuildContext context) {
     final colors = Theme.of(context).colorScheme;
@@ -13,42 +16,52 @@ class HerMessage extends StatelessWidget {
       children: [
         Container(
           decoration: BoxDecoration(
-              color: colors.primary,
-              borderRadius: const BorderRadius.all(Radius.circular(20))),
-          child: const Padding(
-            padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-            child: Text('Saludos!', style: TextStyle(color: Colors.white)),
+            color: colors.primary,
+            borderRadius: const BorderRadius.all(Radius.circular(20)),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+            child: Text(
+              message.text,
+              style: const TextStyle(color: Colors.white),
+            ),
           ),
         ),
         const SizedBox(height: 20),
-        _Image(), 
-        const SizedBox(height: 20)
+        _Image(imageUrl: message.imageUrl ?? ''),
+        const SizedBox(height: 20),
       ],
     );
   }
 }
 
 class _Image extends StatelessWidget {
+  final String imageUrl;
+
+  const _Image({Key? key, required this.imageUrl}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
+
     return ClipRRect(
       borderRadius: BorderRadius.circular(20),
       child: Image.network(
-        'https://yesno.wtf/assets/yes/14-b57c6dc03aa15a4b18f53eb50d6197ee.gif',
-        width: size.width *0.5,
+        imageUrl,
+        width: size.width * 0.5,
         height: 130,
         fit: BoxFit.cover,
         loadingBuilder: (context, child, loadingProgress) {
-          if(loadingProgress == null) return child;
-          
+          if (loadingProgress == null) return child;
+
           return Container(
-            width: size.width*0.5,
+            width: size.width * 0.5,
             height: 150,
             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
             child: const Text('Recibiendo imagen...'),
           );
         },
-        ));
+      ),
+    );
   }
 }
